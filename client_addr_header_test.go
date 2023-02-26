@@ -26,13 +26,13 @@ func TestClientAddrHeader_ServeHTTP(t *testing.T) {
 			name: "test_hdr1",
 			pluginConfig: &plugin.Config{
 				host: "X-Remote-IP",
-				port: "X-Remote-Port"
+				port: "X-Remote-Port",
 			},
 		},
 		{
 			name: "test_hdr2",
 			pluginConfig: &plugin.Config{
-				host: "X-Remote-IP"
+				host: "X-Remote-IP",
 			},
 		},
 	} {
@@ -61,7 +61,7 @@ func TestClientAddrHeader_ServeHTTP(t *testing.T) {
 				t.Errorf("expected header %s to be set", tt.pluginConfig.host)
 			}
 
-			if tt.pluginConfig.port != nil {
+			if tt.pluginConfig.port != "" {
 				if _, ok := responseHeaderData[tt.pluginConfig.port]; !ok {
 					t.Errorf("expected header %s to be set", tt.pluginConfig.port)
 				}

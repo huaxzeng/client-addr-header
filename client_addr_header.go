@@ -31,7 +31,7 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 		return nil, fmt.Errorf("host cannot be empty")
 	}
 
-	if config.port != nil && config.host == config.port {
+	if config.port != "" && config.host == config.port {
 		return nil, fmt.Errorf("host cannot be the same as port")
 	}
 
@@ -51,7 +51,7 @@ func (a *ClientAddrHeader) ServeHTTP(rw http.ResponseWriter, req *http.Request) 
 	}
 
 	req.Header.Set(a.config.host, host)
-	if a.config.port != nil {
+	if a.config.port != "" {
 		req.Header.Set(a.config.port, port)
 	}
 	a.next.ServeHTTP(rw, req)
