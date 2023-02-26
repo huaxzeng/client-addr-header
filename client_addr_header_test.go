@@ -1,4 +1,4 @@
-package client_addr_header_test
+package client_addr_header
 
 import (
 	"context"
@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	plugin "github.com/huaxzeng/client-addr-header"
 )
 
 func dummyHandler(w http.ResponseWriter, r *http.Request) {
@@ -20,24 +18,32 @@ func dummyHandler(w http.ResponseWriter, r *http.Request) {
 func TestClientAddrHeader_ServeHTTP(t *testing.T) {
 	for _, tt := range []struct {
 		name         string
-		pluginConfig *plugin.Config
+		pluginConfig *Config
 	}{
 		{
-			name: "test_hdr1",
-			pluginConfig: &plugin.Config{
-				host: "X-Remote-IP",
+			name: "both host and port headers",
+			pluginConfig: &Config{
+				host: "X-Remote-Ip",
 				port: "X-Remote-Port",
 			},
 		},
 		{
-			name: "test_hdr2",
-			pluginConfig: &plugin.Config{
-				host: "X-Remote-IP",
+			name: "only host header",
+			pluginConfig: &Config{
+				host: "X-Remote-Ip",
 			},
 		},
+		{
+			name: "host and port header with non standard casing",
+			pluginConfig: &Config{
+				host: "x-client-host",
+                port: "X-CLIENT-PORT",
+			},
+		},
+
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			pluginHandler, pluginHandlerCreateError := plugin.New(context.Background(), http.HandlerFunc(dummyHandler), tt.pluginConfig, tt.name)
+			pluginHandler, pluginHandlerCreateError := New(context.Background(), http.HandlerFunc(dummyHandler), tt.pluginConfig, tt.name)
 			if pluginHandlerCreateError != nil {
 				t.Fatal(pluginHandlerCreateError)
 			}
@@ -57,13 +63,17 @@ func TestClientAddrHeader_ServeHTTP(t *testing.T) {
 			responseHeaderData := make(map[string][]string)
 			json.NewDecoder(rsp.Body).Decode(&responseHeaderData)
 
-			if _, ok := responseHeaderData[tt.pluginConfig.host]; !ok {
-				t.Errorf("expected header %s to be set", tt.pluginConfig.host)
+            t.Logf("response header: %s", responseHeaderData)
+
+            hostHeader := http.CanonicalHeaderKey(tt.pluginConfig.host)
+			if _, ok := responseHeaderData[hostHeader]; !ok {
+				t.Errorf("expected header %s to be set", hostHeader)
 			}
 
 			if tt.pluginConfig.port != "" {
-				if _, ok := responseHeaderData[tt.pluginConfig.port]; !ok {
-					t.Errorf("expected header %s to be set", tt.pluginConfig.port)
+                portHeader := http.CanonicalHeaderKey(tt.pluginConfig.port)
+				if _, ok := responseHeaderData[portHeader]; !ok {
+					t.Errorf("expected header %s to be set", portHeader)
 				}
 			}
 		})
@@ -71,7 +81,7 @@ func TestClientAddrHeader_ServeHTTP(t *testing.T) {
 }
 
 func TestCreateConfig(t *testing.T) {
-	config := plugin.CreateConfig()
+	config := CreateConfig()
 
 	if fmt.Sprintf("%T", config) != "*client_addr_header.Config" {
 		t.Errorf("expected config to be of type *client_addr_header.Config")
