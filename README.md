@@ -1,10 +1,40 @@
-# Traefik Plugin: Custom Source Header
+# Traefik Plugin: Client Address Header
 
-Custom Source Header is a middleware plugin for Traefik. It injects the remote address of the client into a selectable header.
+This is a fork from https://github.com/bonsai-oss/custom-source-header
+
+Client Address Header is a middleware plugin for Traefik. It injects the remote address and port of the client into selectable headers.
 
 ## Why does this exist?
 When operating a kubernetes environment inside a private network combined with a second layer of Traefik, the remote address of the client is not available to the application due to header overwriting.
 
-## Install the Plugin
+## Configuration
 
-To use the plugin please install it according to the following instructions from the Traefic Plugin Catalog: https://plugins.traefik.io/plugins/633a02e3eff06de33b092377/custom-source-header
+To configure this plugin you should add its configuration to the Traefik dynamic configuration as explained [here](https://docs.traefik.io/getting-started/configuration-overview/#the-dynamic-configuration).
+The following snippet shows how to configure this plugin with the File provider in TOML and YAML:
+
+Static:
+
+```toml
+[experimental.plugins.clientaddrheader]
+  modulename = "github.com/huaxzeng/client-addr-header"
+  version = "v0.0.1"
+```
+
+Dynamic:
+
+```toml
+[http.middlewares]
+  [http.middlewares.injectclientaddrheaders.plugin.clientaddrheader]
+    host = "X-Client-Ip"
+    port = "X-Client-Port"
+```
+
+```yaml
+http:
+  middlewares:
+   injectclientaddrheaders:
+      plugin:
+        clientaddrheader:
+          host: "X-Client-Ip"
+          port: "X-Client-Port"
+```

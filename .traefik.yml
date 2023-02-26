@@ -1,10 +1,11 @@
 ---
-displayName: Custom Source Header
+displayName: Client Address Header
 type: middleware
 
-import: github.com/bonsai-oss/custom-source-header
+import: github.com/huaxzeng/client-addr-header
 
-summary: 'Inject the remote address of the client into a selectable header.'
+summary: 'Traefik plugin injecting clients IP and port into selectable headers.'
 
 testData:
-  headerName: X-Request-Source
+  host: X-Client-IP
+  port: X-Client-Port
