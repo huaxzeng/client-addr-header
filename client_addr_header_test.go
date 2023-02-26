@@ -1,4 +1,4 @@
-package custom_source_header_test
+package client_addr_header_test
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	plugin "github.com/bonsai-oss/custom-source-header"
+	plugin "github.com/huaxzeng/client-addr-header"
 )
 
 func dummyHandler(w http.ResponseWriter, r *http.Request) {
@@ -17,7 +17,7 @@ func dummyHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func TestCustomSourceHeader_ServeHTTP(t *testing.T) {
+func TestClientAddrHeader_ServeHTTP(t *testing.T) {
 	for _, tt := range []struct {
 		name         string
 		pluginConfig *plugin.Config
@@ -25,13 +25,14 @@ func TestCustomSourceHeader_ServeHTTP(t *testing.T) {
 		{
 			name: "test_hdr1",
 			pluginConfig: &plugin.Config{
-				HeaderName: "X-Forwarded-For",
+				host: "X-Remote-IP",
+				port: "X-Remote-Port"
 			},
 		},
 		{
 			name: "test_hdr2",
 			pluginConfig: &plugin.Config{
-				HeaderName: "X-Source-Address",
+				host: "X-Remote-IP"
 			},
 		},
 	} {
@@ -56,8 +57,14 @@ func TestCustomSourceHeader_ServeHTTP(t *testing.T) {
 			responseHeaderData := make(map[string][]string)
 			json.NewDecoder(rsp.Body).Decode(&responseHeaderData)
 
-			if _, ok := responseHeaderData[tt.pluginConfig.HeaderName]; !ok {
-				t.Errorf("expected header %s to be set", tt.pluginConfig.HeaderName)
+			if _, ok := responseHeaderData[tt.pluginConfig.host]; !ok {
+				t.Errorf("expected header %s to be set", tt.pluginConfig.host)
+			}
+
+			if tt.pluginConfig.port != nil {
+				if _, ok := responseHeaderData[tt.pluginConfig.port]; !ok {
+					t.Errorf("expected header %s to be set", tt.pluginConfig.port)
+				}
 			}
 		})
 	}
@@ -66,7 +73,7 @@ func TestCustomSourceHeader_ServeHTTP(t *testing.T) {
 func TestCreateConfig(t *testing.T) {
 	config := plugin.CreateConfig()
 
-	if fmt.Sprintf("%T", config) != "*custom_source_header.Config" {
-		t.Errorf("expected config to be of type *custom_source_header.Config")
+	if fmt.Sprintf("%T", config) != "*client_addr_header.Config" {
+		t.Errorf("expected config to be of type *client_addr_header.Config")
 	}
 }

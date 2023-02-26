@@ -1,3 +1,3 @@
-module github.com/bonsai-oss/custom-source-header
+module github.com/huaxzeng/client-addr-header
 
 go 1.19
