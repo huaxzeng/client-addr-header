@@ -25,7 +25,7 @@ Dynamic:
 ```toml
 [http.middlewares]
   [http.middlewares.injectclientaddrheaders.plugin.clientaddrheader]
-    host = "X-Client-IP"
+    host = "X-Client-Ip"
     port = "X-Client-Port"
 ```
 
@@ -35,6 +35,6 @@ http:
    injectclientaddrheaders:
       plugin:
         clientaddrheader:
-          host: "X-Client-IP"
+          host: "X-Client-Ip"
           port: "X-Client-Port"
 ```
