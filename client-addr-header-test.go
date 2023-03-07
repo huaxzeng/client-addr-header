@@ -1,4 +1,4 @@
-package client_addr_header
+package traefik_plugin_client_addr_header
 
 import (
 	"context"

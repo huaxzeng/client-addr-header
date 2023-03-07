@@ -1,4 +1,4 @@
-package client_addr_header
+package traefik_plugin_client_addr_header
 
 import (
 	"context"
@@ -9,13 +9,16 @@ import (
 
 // Config the plugin configuration.
 type Config struct {
-	host	string	`json:",omitempty"`
-	port	string	`json:",omitempty"`
+	host	string	`json:"host,omitempty" toml:"host,omitempty" yaml:"host,omitempty"`
+	port	string	`json:"port,omitempty" toml:"port,omitempty" yaml:"port,omitempty"`
 }
 
 // CreateConfig creates the default plugin configuration.
 func CreateConfig() *Config {
-	return &Config{}
+	return &Config{
+		host: "",
+		port: "",
+	}
 }
 
 // ClientAddrHeader a ClientAddrHeader plugin.

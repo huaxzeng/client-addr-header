@@ -16,8 +16,8 @@ Static:
 
 ```toml
 [experimental.plugins.clientaddrheader]
-  modulename = "github.com/huaxzeng/client-addr-header"
-  version = "v0.0.1"
+  modulename = "github.com/huaxzeng/traefik-plugin-client-addr-header"
+  version = "v0.0.2"
 ```
 
 Dynamic:
