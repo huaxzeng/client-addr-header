@@ -30,7 +30,7 @@ func TestClientAddrHeader_ServeHTTP(t *testing.T) {
 		{
 			name: "only host header",
 			pluginConfig: &Config{
-				Port: "X-Remote-Ip",
+				Host: "X-Remote-Ip",
 			},
 		},
 		{
@@ -83,7 +83,7 @@ func TestClientAddrHeader_ServeHTTP(t *testing.T) {
 func TestCreateConfig(t *testing.T) {
 	config := CreateConfig()
 
-	if fmt.Sprintf("%T", config) != "*client_addr_header.Config" {
-		t.Errorf("expected config to be of type *client_addr_header.Config")
+	if fmt.Sprintf("%T", config) != "*traefik_plugin_client_addr_header.Config" {
+		t.Errorf("expected config to be of type *traefik_plugin_client_addr_header.Config")
 	}
 }
