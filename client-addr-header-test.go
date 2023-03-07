@@ -23,21 +23,21 @@ func TestClientAddrHeader_ServeHTTP(t *testing.T) {
 		{
 			name: "both host and port headers",
 			pluginConfig: &Config{
-				host: "X-Remote-Ip",
-				port: "X-Remote-Port",
+				Host: "X-Remote-Ip",
+				Port: "X-Remote-Port",
 			},
 		},
 		{
 			name: "only host header",
 			pluginConfig: &Config{
-				host: "X-Remote-Ip",
+				Port: "X-Remote-Ip",
 			},
 		},
 		{
 			name: "host and port header with non standard casing",
 			pluginConfig: &Config{
-				host: "x-client-host",
-                port: "X-CLIENT-PORT",
+				Host: "x-client-host",
+				Port: "X-CLIENT-PORT",
 			},
 		},
 
@@ -63,15 +63,15 @@ func TestClientAddrHeader_ServeHTTP(t *testing.T) {
 			responseHeaderData := make(map[string][]string)
 			json.NewDecoder(rsp.Body).Decode(&responseHeaderData)
 
-            t.Logf("response header: %s", responseHeaderData)
+			t.Logf("response header: %s", responseHeaderData)
 
-            hostHeader := http.CanonicalHeaderKey(tt.pluginConfig.host)
+			hostHeader := http.CanonicalHeaderKey(tt.pluginConfig.Host)
 			if _, ok := responseHeaderData[hostHeader]; !ok {
 				t.Errorf("expected header %s to be set", hostHeader)
 			}
 
-			if tt.pluginConfig.port != "" {
-                portHeader := http.CanonicalHeaderKey(tt.pluginConfig.port)
+			if tt.pluginConfig.Port != "" {
+				portHeader := http.CanonicalHeaderKey(tt.pluginConfig.Port)
 				if _, ok := responseHeaderData[portHeader]; !ok {
 					t.Errorf("expected header %s to be set", portHeader)
 				}

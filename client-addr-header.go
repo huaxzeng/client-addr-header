@@ -9,15 +9,15 @@ import (
 
 // Config the plugin configuration.
 type Config struct {
-	host	string	`json:"host,omitempty" toml:"host,omitempty" yaml:"host,omitempty"`
-	port	string	`json:"port,omitempty" toml:"port,omitempty" yaml:"port,omitempty"`
+	Host	string	`json:"host,omitempty" toml:"host,omitempty" yaml:"host,omitempty"`
+	Port	string	`json:"port,omitempty" toml:"port,omitempty" yaml:"port,omitempty"`
 }
 
 // CreateConfig creates the default plugin configuration.
 func CreateConfig() *Config {
 	return &Config{
-		host: "",
-		port: "",
+		Host: "",
+		Port: "",
 	}
 }
 
@@ -30,11 +30,11 @@ type ClientAddrHeader struct {
 
 // New created a new ClientAddrHeader plugin.
 func New(ctx context.Context, next http.Handler, config *Config, name string) (http.Handler, error) {
-	if config.host == "" {
+	if config.Host == "" {
 		return nil, fmt.Errorf("host cannot be empty")
 	}
 
-	if config.port != "" && config.host == config.port {
+	if config.Port != "" && config.Host == config.Port {
 		return nil, fmt.Errorf("host cannot be the same as port")
 	}
 
@@ -53,9 +53,9 @@ func (a *ClientAddrHeader) ServeHTTP(rw http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	req.Header.Set(a.config.host, host)
-	if a.config.port != "" {
-		req.Header.Set(a.config.port, port)
+	req.Header.Set(a.config.Host, host)
+	if a.config.Port != "" {
+		req.Header.Set(a.config.Port, port)
 	}
 	a.next.ServeHTTP(rw, req)
 }
