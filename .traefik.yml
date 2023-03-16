@@ -1,10 +1,7 @@
----
 displayName: Client Address Header
 type: middleware
-
 import: github.com/huaxzeng/traefik-plugin-client-addr-header
-
-summary: 'Traefik plugin injecting clients IP and port into selectable headers.'
+summary: Traefik plugin injecting clients IP and port into selectable headers.
 
 testData:
   host: X-Client-Ip
